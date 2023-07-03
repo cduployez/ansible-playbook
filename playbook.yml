@@ -46,3 +46,27 @@
         - angular-resume
         - svelte-resume
       tags: git-clone
+
+    - name: "Install nvm"
+      ansible.builtin.shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+      args:
+        executable: /bin/bash
+        chdir: "~"
+        creates: "~/.nvm/nvm.sh"
+      tags:
+        - nvm
+        - nodejs
+        - npm
+
+    - name: "Install node"
+      ansible.builtin.shell: |
+        source ~/.nvm/nvm.sh && nvm install {{ item }} && nvm alias default {{ item }}
+      args:
+        executable: /bin/bash
+        chdir: "~"
+        creates: "~/.nvm/versions/node/v{{ item }}"
+      loop:
+        - 14.15.0
+      tags:
+        - nodejs
