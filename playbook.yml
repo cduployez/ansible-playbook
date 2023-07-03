@@ -70,3 +70,10 @@
         - 14.15.0
       tags:
         - nodejs
+        - npm
+
+    - name: "Install @angular/cli" #npm install -g @angular/cli
+      npm:
+        name: "@angular/cli"
+        global: true
+      tags: angular
