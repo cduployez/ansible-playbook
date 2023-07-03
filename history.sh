@@ -23,3 +23,4 @@ python3 -m pip install --user ansible
 
 # Add to ~/.bashrc
 # export PATH="$PATH:/home/cduployez/.local/bin"
+

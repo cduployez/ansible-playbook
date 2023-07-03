@@ -1,6 +1,22 @@
 - hosts: localhost
   become: true
   tasks:
+
+    # Docker
     - name: "Install Docker"
       apt:
         name: docker.io
+
+    # Sublime Text
+    - name: "Install Sublime Text"
+      snap:
+        name: sublime-text
+        classic: true
+      tags: sublime-text
+    - name: "Install Sublime Text dependencies"
+      apt:
+        name:
+          - libgl1
+          - libcanberra-gtk-module 
+          - libcanberra-gtk3-module
+      tags: sublime-text
