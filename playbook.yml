@@ -58,6 +58,7 @@
         - nvm
         - nodejs
         - npm
+        - angular
 
     - name: "Install node"
       ansible.builtin.shell: |
@@ -67,10 +68,11 @@
         chdir: "~"
         creates: "~/.nvm/versions/node/v{{ item }}"
       loop:
-        - 14.15.0
+        - 18.16.1
       tags:
         - nodejs
         - npm
+        - angular
 
     - name: "Install @angular/cli" #npm install -g @angular/cli
       npm:
