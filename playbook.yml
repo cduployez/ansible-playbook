@@ -26,3 +26,9 @@
         name: gitkraken
         classic: true
       tags: gitkraken
+
+    - name: "Install Visual Studio Code"
+      snap:
+        name: code
+        classic: true
+      tags: visual-studio-code
