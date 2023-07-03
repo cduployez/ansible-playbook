@@ -8,6 +8,22 @@
       become: true
       tags: docker
 
+    - name: "Create the docker group"
+      group:
+        name: docker
+        state: present
+      tags: docker
+      become: true
+
+    - name: "Add user cduployez to docker group"
+      user:
+        name: cduployez
+        groups: docker
+        shell: /bin/bash
+        append: yes
+      tags: docker
+      become: true
+
     # Sublime Text
     - name: "Install Sublime Text"
       snap:
