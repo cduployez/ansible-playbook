@@ -1,0 +1,19 @@
+---
+- name: Install Docker
+  apt:
+    name: docker.io
+  become: true
+
+- name: Create the docker group
+  group:
+    name: docker
+    state: present
+  become: true
+
+- name: Add user cduployez to docker group
+  user:
+    name: cduployez
+    groups: docker
+    shell: /bin/bash
+    append: yes
+  become: true

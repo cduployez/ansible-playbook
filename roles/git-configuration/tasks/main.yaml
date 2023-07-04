@@ -1,0 +1,42 @@
+---
+- name: Configure default branch name
+  git_config:
+    name: init.defaultBranch
+    scope: global
+    value: main
+
+- name: Enable git rerere
+  git_config:
+    name: rerere.enabled
+    scope: global
+    value: 'true'
+
+- name: Make git pull perform rebase instead of merge
+  git_config:
+    name: pull.rebase
+    scope: global
+    value: 'true'
+
+- name: Enforce pruning deleted branches on git fetch
+  git_config:
+    name: fetch.prune
+    scope: global
+    value: 'true'
+
+- name: Force line ending to LF
+  git_config:
+    name: core.autocrlf
+    scope: global
+    value: input
+
+- name: Detect indentation with tabs on git diff
+  git_config:
+    name: core.whitespace
+    scope: global
+    value: tab-in-indent
+
+- name: Add alias 'git lo' (display commit graph)
+  git_config:
+    name: alias.lo
+    scope: global
+    value: log --graph --decorate --pretty=oneline --abbrev-commit --all

@@ -1,0 +1,18 @@
+---
+- name: Create workspace directory
+  file:
+    path: "{{ workspace_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Create workspace-data directory
+  file:
+    path: "{{ workspace_data_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Git clone cduployez projects
+  git:
+    repo: "git@github.com:cduployez/{{ item }}.git"
+    dest: "{{ workspace_path }}/{{ item }}"
+  loop: "{{ cduployez_projects }}"

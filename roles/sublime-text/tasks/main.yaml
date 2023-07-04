@@ -1,0 +1,25 @@
+---
+- name: Install Sublime Text
+  snap:
+    name: sublime-text
+    classic: true
+  become: true
+
+- name: Install Sublime Text dependencies
+  apt:
+    name:
+      - libgl1
+      - libcanberra-gtk-module 
+      - libcanberra-gtk3-module
+  become: true
+
+- name: Create Sublime Text settings folder
+  file:
+    path: "~/.config/sublime-text/Packages/User"
+    state: directory
+    mode: "0700"
+
+- name: Configure Sublime Text settings
+  copy:
+    src: "Preferences.sublime-settings"
+    dest: "~/.config/sublime-text/Packages/User/Preferences.sublime-settings"
