@@ -22,3 +22,15 @@
 - name: Init sdkman
   shell:
     cmd: "export SDKMAN_DIR=\"/usr/local/dev/sdkman\" && /bin/bash /usr/local/dev/sdkman-script.sh"
+
+# sdk list java | grep -E -o '11.[0-9\.]*-open' | head -n 1
+- name: Install Java and Maven
+  shell: |
+    export SDKMAN_DIR='/usr/local/dev/sdkman' &&
+    source /usr/local/dev/sdkman/bin/sdkman-init.sh &&
+    JAVA_VERSION=$(sdk list java | grep -E -o '11.[0-9\.]*-open' | head -n 1) &&
+    sdk install java ${JAVA_VERSION}
+    sdk install maven
+    sdk flush archives
+  args:
+    executable: /bin/bash
