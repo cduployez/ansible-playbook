@@ -32,3 +32,7 @@
     # Install Angular libraries
     - role: angular
       tags: angular
+
+    # Install Java
+    - role: java
+      tags: java
