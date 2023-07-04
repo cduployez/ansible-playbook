@@ -34,3 +34,8 @@
     sdk flush archives
   args:
     executable: /bin/bash
+
+- name: Delete sdkman script
+  file:
+    path: /bin/bash /usr/local/dev/sdkman-script.sh
+    state: absent
