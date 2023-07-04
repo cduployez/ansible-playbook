@@ -1,0 +1,6 @@
+---
+- name: "Install Gitkraken"
+  snap:
+    name: gitkraken
+    classic: true
+  become: true

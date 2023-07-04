@@ -1,0 +1,23 @@
+---
+- name: "Install nvm"
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+  args:
+    executable: /bin/bash
+    chdir: "~"
+    creates: "~/.nvm/nvm.sh"
+
+- name: "Install node"
+  ansible.builtin.shell: |
+    source ~/.nvm/nvm.sh && nvm install {{ item }} && nvm alias default {{ item }}
+  args:
+    executable: /bin/bash
+    chdir: "~"
+    creates: "~/.nvm/versions/node/v{{ item }}"
+  loop:
+    - 18.16.1
+
+- name: "Install @angular/cli"
+  npm:
+    name: "@angular/cli"
+    global: true

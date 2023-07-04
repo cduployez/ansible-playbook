@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  roles:
+    # Define installation variables
+    - role: settings
+      tags: always
+
+    # Git configuration
+    - role: git-configuration
+      tags: git-configuration
+
+    # Docker
+    - role: docker
+      tags: docker
+
+    # Sublime Text
+    - role: sublime-text
+      tags: sublime-text
+
+    # Gitkraken
+    - role: gitkraken
+      tags: gitkraken
+
+    # Visual Studio Code
+    - role: visual-studio-code
+      tags: visual-studio-code
+
+    # Git clone workspace projects
+    - role: git-clone
+      tags: git-clone
+
+    # Install Angular libraries
+    - role: angular
+      tags: angular
