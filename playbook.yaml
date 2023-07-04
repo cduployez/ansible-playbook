@@ -36,3 +36,7 @@
     # Install Java
     - role: java
       tags: java
+
+    # IntelliJ Community
+    - role: gantsign.intellij
+      tags: intellij
