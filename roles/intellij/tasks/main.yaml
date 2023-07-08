@@ -1,0 +1,6 @@
+---
+- name: "Install intellij-idea-community"
+  snap:
+    name: intellij-idea-community
+    classic: true
+  become: true

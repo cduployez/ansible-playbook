@@ -42,5 +42,5 @@
       tags: java
 
     # IntelliJ Community
-    - role: gantsign.intellij
+    - role: intellij
       tags: intellij

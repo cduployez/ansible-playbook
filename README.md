@@ -1,5 +1,11 @@
 # ansible-playbook
 
+## Graphical applications
+* Sublime Text : `subl`
+* Gitkraken : `gitkraken&`
+* Visual Studio Code : `code`
+* Intellij : `intellij-idea-community`
+
 ## VcXsrv
 
 * Install VcXsrv (https://sourceforge.net/projects/vcxsrv/)
