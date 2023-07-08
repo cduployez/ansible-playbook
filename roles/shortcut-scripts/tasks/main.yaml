@@ -27,3 +27,4 @@
     - ansible-playbook.sh
     - build-back.sh
     - build-back-all.sh
+    - docker-compose.sh

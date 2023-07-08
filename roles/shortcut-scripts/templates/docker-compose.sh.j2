@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+PROJECT="${1}"
+
+{% for project in back_projects + front_projects %}
+{% if loop.first %}
+if [[ "${PROJECT}" == "{{ project }}" ]]; then
+  cd "{{ workspace_path }}/{{ project }}/docker-compose"
+  docker compose up -d
+{% else %}
+elif [[ "${PROJECT}" == "{{ project }}" ]]; then
+  cd "{{ workspace_path }}/{{ project }}/docker-compose"
+  docker compose up -d
+{% endif %}
+{% endfor %}
+fi
