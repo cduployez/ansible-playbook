@@ -1,7 +1,46 @@
 ---
-- name: Install Docker
+- name: Remove deprecated docker packages
   apt:
-    name: docker.io
+    pkg:
+      - docker.io
+      - docker-compose
+      - docker-doc
+      - podman-docker
+    state: absent
+  become: true
+
+- name: Add packages needed to add docker apt repository
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - software-properties-common
+  become: true
+
+- name: Add Docker’s official GPG key
+  shell: |
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor > /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+- name: Add apt repository for docker
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable"
+    state: present
+  become: true
+
+- name: Add docker packages
+  apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+    update_cache: true
   become: true
 
 - name: Create the docker group
