@@ -1,0 +1,97 @@
+#!/bin/bash
+set -e
+
+# Import lib-colors
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
+func_help() {
+  func_echo_title "Help"
+
+  func_echo_grid "
+    {% for project in back_projects + front_projects %}
+    $(func_echo_sub_title {{ project }})
+      \t {{ project }} | Run docker compose command on {{ project }} docker compose folder
+      \t {{ project }}-build | Build images of {{ project }} docker compose folder
+      \t {{ project }}-up | Start containers of {{ project }} docker compose folder
+    {% endfor %}
+  "
+}
+
+# $1: Docker compose folder
+# ${@:2}: Docker command parameters
+func_docker_compose() {
+  local dockerComposeFolder="${1}"
+  local commandParameters="${@:2}"
+
+  # Go to docker compose folder
+  cd ${dockerComposeFolder}
+
+  # Run docker compose command
+  docker compose -f docker-compose.yaml ${commandParameters}
+}
+
+# $1: Docker compose folder
+# ${@:2}: Docker command parameters
+func_docker_compose_command() {
+  local dockerComposeFolder="${1}"
+  local commandParameters="${@:2}"
+
+  func_echo_title "Running command on docker compose ${dockerComposeFolder}"
+  func_docker_compose ${dockerComposeFolder} ${commandParameters}
+}
+
+# $1: Docker compose folder
+# ${@:2}: Docker command parameters
+func_docker_compose_up() {
+  local dockerComposeFolder="${1}"
+  local commandParameters="${@:2}"
+
+  func_echo_title "Building and starting docker containers for docker compose ${dockerComposeFolder}"
+  func_docker_compose "${dockerComposeFolder}" up -d --build --renew-anon-volumes ${commandParameters}
+}
+
+# $1: Docker compose folder
+# ${@:2}: Docker command parameters
+func_docker_compose_build() {
+  local dockerComposeFolder="${1}"
+  local commandParameters="${@:2}"
+
+  func_echo_title "Building docker containers for docker compose ${dockerComposeFolder}"
+  func_docker_compose "${dockerComposeFolder}" build ${commandParameters}
+}
+
+# $1: Project name
+# ${@:2}: Command parameters for docker command
+func_main() {
+  cd {{ workspace_path }}
+
+  local project="${1}"
+
+  if [[ "${project}" == "all" ]]; then
+    {% for project in back_projects + front_projects %}
+    func_docker_compose_command {{ project  }}/docker-compose ${@:2}
+    {% endfor %}
+  elif [[ "${project}" == "all-build" ]]; then
+    {% for project in back_projects + front_projects %}
+    func_docker_compose_build {{ project  }}/docker-compose ${@:2}
+    {% endfor %}
+  elif [[ "${project}" == "all-up" ]]; then
+    {% for project in back_projects + front_projects %}
+    func_docker_compose_up {{ project  }}/docker-compose ${@:2}
+    {% endfor %}
+
+  {% for project in back_projects + front_projects %}
+  elif [[ "${project}" == "{{ project }}" ]]; then
+    func_docker_compose_command {{ project }}/docker-compose ${@:2}
+  elif [[ "${project}" == "{{ project }}-build" ]]; then
+    func_docker_compose_build {{ project }}/docker-compose ${@:2}
+  elif [[ "${project}" == "{{ project }}-up" ]]; then
+    func_docker_compose_up {{ project }}/docker-compose ${@:2}
+  {% endfor %}
+
+  else
+    func_help
+  fi
+}
+
+func_main ${@}
