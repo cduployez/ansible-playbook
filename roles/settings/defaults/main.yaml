@@ -1,3 +1,13 @@
 ---
 workspace_path: ~/workspace
 workspace_data_path: ~/workspace-data
+
+back_projects:
+  - back-resume
+
+front_projects:
+  - angular-resume
+  - svelte-resume
+
+util_projects:
+  - ansible-playbook

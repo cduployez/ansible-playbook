@@ -44,3 +44,7 @@
     # IntelliJ Community
     - role: intellij
       tags: intellij
+
+    # Shortcut scripts
+    - role: shortcut-scripts
+      tags: shortcut-scripts

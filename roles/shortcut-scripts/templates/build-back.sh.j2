@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+# Import lib-colors
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
+# ${1}: Workspace project name to build
+func_build_back_project() {
+  local projectName="${1}"
+  func_echo_title "Building ${projectName}"
+  cd {{ workspace_path }}/${projectName}
+  mvn clean install -DskipTests
+}
+
+# ${@}: Workspace project names to build
+func_build_back_projects() {
+  local projectName
+  for projectName in "${@}"
+  do
+    func_build_back_project ${projectName}
+  done
+}
+
+func_build_back_projects "${@}"

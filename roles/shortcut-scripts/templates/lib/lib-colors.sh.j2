@@ -1,0 +1,53 @@
+#!/bin/zsh
+
+# Colors
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+
+# Decoration
+BOLD=$(tput bold)
+UNDERLINE=$(tput smul)
+NORMAL=$(tput sgr0)
+
+# Style
+STYLE_HEADER="${BOLD}${BLUE}"
+STYLE_TITLE="${BOLD}${UNDERLINE}${YELLOW}"
+STYLE_SUB_TITLE="${YELLOW}"
+STYLE_IMPORTANT="${RED}"
+
+func_echo_title() {
+  echo "${STYLE_TITLE}${@}${NORMAL}"
+}
+
+func_echo_important() {
+  echo "${STYLE_IMPORTANT}${@}${NORMAL}"
+}
+
+func_echo_sub_title() {
+  echo "${STYLE_SUB_TITLE}${@}${NORMAL}"
+}
+
+func_echo_green() {
+  echo "${GREEN}${@}${NORMAL}"
+}
+
+func_echo_command() {
+  echo -e "$(func_echo_green "\t ➜ ")" "${@}"
+}
+
+# $1: URL
+# $2: Text to display
+func_echo_link() {
+  local URL="${1}"
+  local TEXT="${2}"
+  echo -e "\e]8;;${URL}\a${TEXT}\e]8;;\a"
+}
+
+# Log a table.
+# $1: Text with "|" as separator between the columns, and "\n" between the rows
+func_echo_grid() {
+  local TEXT="${@}"
+  echo -e "${TEXT}" | column -s '|' -o ' ' -t
+}

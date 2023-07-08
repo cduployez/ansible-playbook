@@ -24,6 +24,9 @@
   ansible.builtin.blockinfile:
     path: ~/.zshrc
     block: |
+      # Add scripts folder to PATH
+      export PATH={{workspace_path}}/scripts:$PATH
+
       # Load Angular CLI autocompletion.
       source <(ng completion script)
 

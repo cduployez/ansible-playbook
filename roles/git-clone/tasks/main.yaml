@@ -11,8 +11,8 @@
     state: directory
     mode: "0755"
 
-- name: Git clone cduployez projects
+- name: Git clone projects
   git:
     repo: "git@github.com:cduployez/{{ item }}.git"
     dest: "{{ workspace_path }}/{{ item }}"
-  loop: "{{ cduployez_projects }}"
+  loop: "{{ front_projects + back_projects }}"

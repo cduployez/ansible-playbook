@@ -1,0 +1,29 @@
+---
+- name: Create scripts folder
+  file:
+    path: "{{ workspace_path }}/scripts"
+    state: directory
+
+- name: Create scripts/lib folder
+  file:
+    path: "{{ workspace_path }}/scripts/lib"
+    state: directory
+
+- name: Replace variables and copy lib scripts in workspace folder
+  template:
+    src: "templates/lib/{{ item }}.j2"
+    dest: "{{ workspace_path }}/scripts/lib/{{ item }}"
+    mode: u+x
+  loop:
+    - lib-colors.sh
+    - lib-project-util.sh
+
+- name: Replace variables and copy shortcut scripts in workspace folder
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "{{ workspace_path }}/scripts/{{ item }}"
+    mode: u+x
+  loop:
+    - ansible-playbook.sh
+    - build-back.sh
+    - build-back-all.sh

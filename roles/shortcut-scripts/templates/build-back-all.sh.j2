@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# Import lib-colors
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
+# Import lib-project-util
+source {{ workspace_path }}/scripts/lib/lib-project-util.sh
+
+# Build all back projects
+build-back.sh "$(func_list_back_projects)"

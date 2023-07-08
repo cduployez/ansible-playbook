@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+cd {{ workspace_path }}/ansible-playbook
+ansible-playbook playbook.yaml ${@}
