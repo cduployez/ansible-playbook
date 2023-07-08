@@ -5,6 +5,10 @@
     - role: settings
       tags: always
 
+    # Configure console with zsh
+    - role: zsh
+      tags: zsh
+
     # Git configuration
     - role: git-configuration
       tags: git-configuration

@@ -1,0 +1,39 @@
+---
+- name: "Install zsh"
+  apt:
+    name: "zsh"
+  become: true
+
+- name: "Install oh-my-zsh"
+  shell: |
+    if [ ! -d $ZSH ]; then
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    fi
+
+- name: "Set zsh in .bashrc"
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    block: |
+      # Use zsh by default on WSL
+      if test -t 1; then
+        exec zsh
+      fi
+    insertbefore: "#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!"
+
+- name: "Add Angular, Ansible and sdk to zsh path"
+  ansible.builtin.blockinfile:
+    path: ~/.zshrc
+    block: |
+      # Load Angular CLI autocompletion.
+      source <(ng completion script)
+
+      # Add Ansible to PATH
+      export PATH="$PATH:/home/cduployez/.local/bin"
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+      #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+      export SDKMAN_DIR="/usr/local/dev/sdkman"
+      [[ -s "/usr/local/dev/sdkman/bin/sdkman-init.sh" ]] && source "/usr/local/dev/sdkman/bin/sdkman-init.sh"
+
