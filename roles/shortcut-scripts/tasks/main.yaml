@@ -28,5 +28,6 @@
     - build-back.sh
     - build-back-all.sh
     - docker-compose.sh
+    - start-angular-resume.sh
     - start-back.sh
     - start-back-resume.sh

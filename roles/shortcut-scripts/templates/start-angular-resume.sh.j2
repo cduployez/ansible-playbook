@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+cd {{ workspace_path }}/angular-resume
+npm install && ng build && docker-compose.sh angular-resume-up
