@@ -49,6 +49,10 @@
     - role: webstorm
       tags: webstorm
 
+    # Chromium
+    - role: chromium
+      tags: chromium
+
     # Shortcut scripts
     - role: shortcut-scripts
       tags: shortcut-scripts

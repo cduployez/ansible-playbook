@@ -1,0 +1,6 @@
+---
+- name: "Install Chromium"
+  snap:
+    name: chromium
+    classic: true
+  become: true
