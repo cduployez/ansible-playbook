@@ -1,0 +1,6 @@
+---
+- name: Install Webstorm
+  snap:
+    name: webstorm
+    classic: true
+  become: true

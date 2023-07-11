@@ -45,6 +45,10 @@
     - role: intellij
       tags: intellij
 
+    # Webstorm
+    - role: webstorm
+      tags: webstorm
+
     # Shortcut scripts
     - role: shortcut-scripts
       tags: shortcut-scripts
