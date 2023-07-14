@@ -86,3 +86,11 @@ ansible-playbook playbook.yaml
       export WSL_HOST=$(cat "/etc/resolv.conf" | grep nameserver | awk '{print $2}' )
       export DISPLAY="${WSL_HOST}:0"
 ```
+
+# Links
+
+# gcloud CLI overview
+
+https://cloud.google.com/sdk/gcloud
+
+Cheat sheet: https://cloud.google.com/sdk/docs/cheatsheet

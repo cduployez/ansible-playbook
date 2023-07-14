@@ -1,0 +1,6 @@
+---
+- name: Download google-cloud-cli archive
+  unarchive:
+    src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-438.0.0-linux-x86_64.tar.gz
+    dest: ~/
+    remote_src: true
