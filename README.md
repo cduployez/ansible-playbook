@@ -70,8 +70,13 @@ ansible-playbook playbook.yaml
 
 ## Install VcXsrv
 
-* Install VcXsrv (https://sourceforge.net/projects/vcxsrv/)
+* Download VcXsrv (https://sourceforge.net/projects/vcxsrv/) and install
 * Add shortcut to shell:startup (https://medium.com/javarevisited/using-wsl-2-with-x-server-linux-on-windows-a372263533c3)
+      * Open Startup folder: `Win+R` > Type `shell:startup`
+      * Create a Windows shortcut with target: `"C:\Program Files\VcXsrv\vcxsrv.exe" :0 -ac -terminate -lesspointer -multiwindow -clipboard -wgl -dpi auto -noreset`
+      * Run shortcut or reboot PC
+      * Allow private and public networks on first usage
+      * Taskbar status icon should appear: Uncheck `Clipboard may use PRIMARY selection`
 * Add to ~/.zhsrc:
 ```sh
       # https://gist.github.com/djfdyuruiry/3150b9e5f3dadba89ea323df49ea7ab1
