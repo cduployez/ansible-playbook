@@ -4,3 +4,14 @@
     src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-438.0.0-linux-x86_64.tar.gz
     dest: ~/
     remote_src: true
+
+- name: Run google-cloud-cli install script
+  command: ~/google-cloud-sdk/install.sh --usage-reporting false --quiet --command-completion true --path-update true
+
+# This task will open browser and request to authenticate to Google Cloud
+- name: Initialize google-cloud-cli
+  command: ~/google-cloud-sdk/bin/gcloud init
+
+- name: Install google-cloud-cli kubectl component
+  command: ~/google-cloud-sdk/bin/gcloud components install kubectl
+  tags: kubectl
