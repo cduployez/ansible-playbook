@@ -21,9 +21,11 @@
 
 - name: Add Docker’s official GPG key
   shell: |
-    sudo install -m 0755 -d /etc/apt/keyrings
+    install -m 0755 -d /etc/apt/keyrings
+    touch /etc/apt/keyrings/docker.gpg
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor > /etc/apt/keyrings/docker.gpg
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+  become: true
 
 - name: Add apt repository for docker
   apt_repository:
