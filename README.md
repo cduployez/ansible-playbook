@@ -87,6 +87,33 @@ ansible-playbook playbook.yaml
       export DISPLAY="${WSL_HOST}:0"
 ```
 
+# OpenLens
+
+Install with scoop on Windows following GitHub page: https://github.com/MuhammedKalkan/OpenLens
+Extensions to install:
+* @alebcay/openlens-node-pod-menu
+
+Use kubectl-proxy.sh to contact GKE cluster, with following Kube config:
+```yaml
+apiVersion: v1
+kind: Config
+clusters:
+  - name: "WSL Cluster"
+    cluster:
+      server: http://localhost:8001
+users:
+  - name: nouser
+contexts:
+  - name: "WSL Cluster"
+    context:
+      cluster: "WSL Cluster"
+      user: nouser
+current-context: "WSL Cluster"
+preferences: {}
+```
+
+Source: https://www.patrickdap.com/post/openlens-wsl/
+
 # Links
 
 # gcloud CLI overview
