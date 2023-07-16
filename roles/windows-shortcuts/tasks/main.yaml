@@ -1,0 +1,11 @@
+---
+# Look for icon name at https://github.com/cbrnix/Newaita/tree/master/Newaita/apps/64
+- name: Create Windows shortcuts
+  shell: "~/workspace/scripts/create-windows-shortcut.sh {{ item.icon }} {{ item.name }} {{ item.image_name }}"
+  loop:
+    - { icon: "subl", name: "WSL-Sublime-Text", image_name: "sublime-text" }
+    - { icon: "chromium", name: "WSL-Chromium", image_name: "chromium-browser" }
+    - { icon: "intellij-idea-community", name: "WSL-IntelliJ", image_name: "intellij" }
+    - { icon: "webstorm", name: "WSL-Webstorm", image_name: "webstorm" }
+    - { icon: "gitkraken", name: "WSL-Gitkraken", image_name: "gitkraken" }
+    - { icon: "code", name: "WSL-Visual-Studio-Code", image_name: "visual-studio-code" }

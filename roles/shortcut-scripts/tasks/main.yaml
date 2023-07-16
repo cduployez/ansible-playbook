@@ -27,7 +27,31 @@
     - ansible-playbook.sh
     - build-back.sh
     - build-back-all.sh
+    - create-windows-shortcut.sh
     - docker-compose.sh
     - start-angular-resume.sh
     - start-back.sh
     - start-back-resume.sh
+    - start-graphical-app.sh
+
+- name: Create Windows wsl-utils destination directory
+  file:
+    path: /mnt/c/wsl-utils
+    state: directory
+
+- name: Copy scripts to Windows wsl-utils destination directory
+  copy:
+    src: files/run-background.vbs
+    dest: /mnt/c/wsl-utils/run-background.vbs
+
+- name: Create WSL Icons folder
+  file:
+    path: /mnt/c/wsl-utils/icons
+    state: directory
+
+- name: Install ImageMagick, used to convert SVG to ICO in shortcut scripts
+  apt:
+    pkg:
+      - inkscape
+      - imagemagick
+  become: true

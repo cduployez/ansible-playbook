@@ -1,0 +1,13 @@
+#!/bin/bash -eux
+
+if [ ! $# -eq 1 ]; then
+    echo "Usage : start-graphical-app.sh chromium"
+    exit 1
+fi
+
+EXECUTABLE_PATH=${1}
+EXECUTABLE_NAME=$(basename ${EXECUTABLE_PATH})
+
+{
+    ${EXECUTABLE_PATH};
+} 2>&1 | tee /tmp/${EXECUTABLE_NAME}_$(date +%Y%m%d_%H%M_%S%N).log

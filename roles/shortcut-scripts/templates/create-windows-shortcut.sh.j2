@@ -1,0 +1,80 @@
+#!/bin/bash -eu
+
+if [ ! $# -eq 3 ]; then
+    echo "Usage: create-windows-shortcut.sh <app> <shortcut name> <icon name>"
+    echo "Example: create-windows-shortcut.sh chromium WSL-Chromium chromium-browser"
+    exit 1
+fi
+
+WSL_NAME="${WSL_DISTRO_NAME}"
+APP=${1}
+APP_PATH="$(which ${APP})"
+TITLE=${2}
+ICON_NAME=${3}
+
+if [[ "${APP_PATH}" == "" ]]; then
+    echo "${APP} not found"
+    exit 1
+fi
+
+COMMAND='$WshShell = New-Object -ComObject WScript.Shell'
+
+# Create shortcut object
+COMMAND="${COMMAND}; \$Shortcut = \$WshShell.CreateShortcut([Environment]::GetFolderPath(\"Desktop\")+\"\\${TITLE}.lnk\")"
+
+# Target path
+COMMAND="${COMMAND}; \$Shortcut.TargetPath = 'C:\Windows\System32\wscript.exe';"
+
+# Command to run
+ZSH_COMMAND="source /etc/zsh/zshrc; source ~/.zshrc; ~/workspace/scripts/start-graphical-app.sh ${APP_PATH}"
+COMMAND="${COMMAND}; \$Shortcut.Arguments = \"\`\"C:\wsl-utils\run-background.vbs\`\" wsl.exe -d ${WSL_NAME} zsh -c '${ZSH_COMMAND}'\";"
+
+# Download, convert and define icon
+# Convert svg image to ico
+# $1: SVG image path
+# $2: Destination ICO image path
+func_convert_svg_to_ico() {
+    local svgPath="${1}"
+    local pngPath="${svgPath}.png"
+    local icoPath="${2}"
+
+    # Check if the input SVG file exists
+    if [ ! -f "${svgPath}" ]; then
+        echo "SVG file not found: ${svgPath}"
+        exit 1
+    fi
+
+    # Convert SVG to ICO with transparent background
+    # https://gist.github.com/azam/3b6995a29b9f079282f3
+    # convert -density 256x256 -background transparent ${svgPath} -transparent white -alpha set -format ico -resize 64x64 -define icon:auto-resize -colors 256 ${icoPath}
+    # convert "${svgPath}" -background transparent "${icoPath}"
+
+    inkscape --export-background-opacity=0 --export-png=${pngPath} ${svgPath}
+    convert ${pngPath} ${icoPath}
+    echo "Destination path: ${icoPath}"
+
+    # Check if the conversion was successful
+    if [ $? -eq 0 ]; then
+        echo "Conversion complete: ${icoPath}"
+    else
+        echo "Conversion failed"
+fi
+}
+
+# Download icon and store it to /mnt/c/wsl-utils/icons
+ICON_WSL_PATH="/mnt/c/wsl-utils/icons/${ICON_NAME}.ico"
+ICON_WINDOWS_PATH="C:\wsl-utils\icons\/${ICON_NAME}.ico"
+if [ ! -f "${ICON_WSL_PATH}" ]; then
+    ICON_URL="https://raw.githubusercontent.com/cbrnix/Newaita/master/Newaita/apps/64/${ICON_NAME}.svg"
+    echo "Downloading icon from ${ICON_URL}..."
+    curl "${ICON_URL}" -o /tmp/${ICON_NAME}.svg
+    func_convert_svg_to_ico "/tmp/${ICON_NAME}.svg" "${ICON_WSL_PATH}"
+fi
+
+COMMAND="${COMMAND}; \$Shortcut.IconLocation = \"${ICON_WINDOWS_PATH}, 0\""
+
+# Save
+COMMAND="${COMMAND}; \$Shortcut.Save()"
+
+# Run shortcut creation in Powershell
+/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe "${COMMAND}"

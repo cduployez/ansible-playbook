@@ -56,3 +56,7 @@
     # Shortcut scripts
     - role: shortcut-scripts
       tags: shortcut-scripts
+
+    # Windows shortcuts
+    - role: windows-shortcuts
+      tags: windows-shortcuts
