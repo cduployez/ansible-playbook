@@ -32,6 +32,7 @@
     - docker-compose.sh
     - git-pull-branch.sh
     - git-pull-main.sh
+    - kubectl-proxy.sh
     - start-angular-resume.sh
     - start-back.sh
     - start-back-resume.sh

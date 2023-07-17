@@ -60,3 +60,7 @@
     # Windows shortcuts
     - role: windows-shortcuts
       tags: windows-shortcuts
+
+    # Google Cloud CLI (gcloud-cli)
+    - role: google-cloud-cli
+      tags: google-cloud-cli
