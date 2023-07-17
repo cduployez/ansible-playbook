@@ -16,6 +16,7 @@
     mode: u+x
   loop:
     - lib-colors.sh
+    - lib-git-pull.sh
     - lib-project-util.sh
 
 - name: Replace variables and copy shortcut scripts in workspace folder
@@ -29,6 +30,8 @@
     - build-back-all.sh
     - create-windows-shortcut.sh
     - docker-compose.sh
+    - git-pull-branch.sh
+    - git-pull-main.sh
     - start-angular-resume.sh
     - start-back.sh
     - start-back-resume.sh
