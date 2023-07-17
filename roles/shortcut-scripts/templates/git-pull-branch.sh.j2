@@ -1,0 +1,69 @@
+#!/bin/bash
+set -e
+
+################################################################################
+# Git pull selected branch on a list of projects structured around a main branch
+################################################################################
+
+# Import git-pull utility methods
+source {{ workspace_path }}/scripts/lib/lib-git-pull.sh
+
+func_help() {
+  func_echo_title "Help"
+  echo "The script will pull all projects to the selected branch"
+
+  func_echo_sub_title "Projects"
+  echo "{{ (util_projects + back_projects + front_projects) | join(', ') }}"
+
+  func_echo_sub_title "Commands"
+  func_echo_grid "
+    $(func_echo_sub_title Update all projects) \n
+      \t | git-pull-branch.sh \n
+    $(func_echo_sub_title Update specific projects) \n
+      \t [project1 project2 ...] | git-pull-branch.sh <project1> <projects...> \n
+      \t | Example: git-pull-branch.sh main ansible-playbook back-resume\n
+    $(func_echo_sub_title Exclude some projects from update)
+      \t e, except [project1 project2 ...] | git-pull-branch.sh <branch> except <project1> <projects...>\n
+      \t | Example: git-pull-branch.sh main except angular-resume svelte-resume"
+}
+
+# Core script
+func_main() {
+
+  local branch="${1}"
+  local command="${2}"
+  local noCommandInputs="${@:2}"
+  local commandInputs="${@:3}"
+  local projects="$(func_list_all_projects)"
+
+  ################################################################################
+  # Help
+  ################################################################################
+
+  if [[ ${1} == "--help" || ${1} == "-h" || ${1} == "help" || ${1} == "h" ]]; then
+    func_help
+
+  ################################################################################
+  # Exclude a project from git pull: ./git-pull-branch.sh main except ansible-playbook
+  ################################################################################
+
+  elif [[ "${command}" == "--except" || "${command}" == "-e" || "${command}" == "except" || "${command}" == "e" ]]; then
+    local inputProjects="${commandInputs}"
+    echo "Except projects ${inputProjects}"
+    projects=$(func_list_projects_without_filter "${projects}" ${inputProjects})
+    echo "Following projects will be updated: ${projects}"
+    func_update_projects "${branch}" $(func_list_all_projects "${projects}")
+
+  ################################################################################
+  # Git pull all or specified projects:
+  # - ./git-pull-branch.sh main
+  # - ./git-pull-branch.sh main ansible-playbook back-resume
+  ################################################################################
+
+  else
+    func_update_projects "${branch}" $(func_list_all_projects  ${noCommandInputs})
+  fi
+}
+
+# Run script
+func_main "${@}"

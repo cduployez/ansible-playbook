@@ -1,0 +1,127 @@
+#!/bin/bash
+set -e
+
+######################################################
+# Utility methods for git-pull scripts
+######################################################
+
+# Import colors for terminal
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
+# Perform a git status and check that there is no staged or unstaged file
+# Otherwise, it will perform a git stash
+# $1: Project name
+func_check_status() {
+  local project="${1}"
+  if [ -z "$(git status --porcelain)" ];
+  then
+    func_echo_sub_title " - No work in progress on ${project}"
+  else
+    func_echo_sub_title " - Work in progress on ${project}"
+    func_echo_important "Stashing changes..."
+    git stash push -m "script-stash-$(date)"
+  fi
+}
+
+# Switch to a specified branch with git
+# $1: Branch name
+# $2: Project name
+func_change_branch() {
+  local branch="${1}"
+  local project="${2}"
+
+  func_echo_sub_title " - Switching to branch ${branch} on project ${project}"
+
+  # --guess: If <branch> is not found but there does exist a tracking branch in exactly one remote with a matching name,
+  # treat as equivalent to git switch -c <branch> --track <remote>/<branch>
+
+  git switch --guess ${branch}
+}
+
+# Pull selected branch
+# $1: Branch name
+# $2: Project name
+func_pull() {
+  local branch="${1}"
+  local project="${2}"
+  func_echo_sub_title " - Pulling branch ${branch} on project ${project}"
+  git pull --rebase
+}
+
+# Check work in progress, checkout and pull a given project
+# $1: Branch name
+# $2: Project name
+func_update_project() {
+  local branch="${1}"
+  local project="${2}"
+
+  cd {{ workspace_path }}/${project}
+  func_echo_title "Updating project ${project} to branch '${branch}'"
+
+  # Only change branch if specified branch exists on remote or local. Otherwise, ignore branch change
+  if git rev-parse --verify ${branch} >/dev/null 2>&1 && git ls-remote --exit-code --heads origin ${branch} >/dev/null 2>&1; then
+    func_check_status ${project}
+    func_change_branch ${branch} ${project}
+    func_pull ${branch} ${project}
+  else
+    func_echo_important " - Branch '${branch}' does not exist locally and/or remotely"
+  fi
+}
+
+# Update multiple projects
+# $1: Branch name
+# ${@:2} : List of all projects to update
+func_update_projects() {
+  local branch="${1}"
+
+  if [[ -z "${@:2}" ]]; then
+    echo "No project to update"
+  else
+    func_echo_sub_title "Updating projects to ${branch} branch"
+  fi
+
+  local project
+  for project in "${@:2}"
+  do
+    func_update_project ${branch} ${project}
+  done
+}
+
+# Filter list ${1} and keep only entries existing in list ${2}
+func_filter_list() {
+  local list1="${1}"
+  local list2="${2}"
+  echo "$(comm -1 -2 <(echo "${list1}" | xargs -n 1 | sort) <(echo "${list2}" | xargs -n 1 | sort) | tr '\n' ' ')"
+}
+
+# $1: List of all projects
+# $2: User input of list of projects
+func_list_intersected_projects() {
+  local projects="${1}"
+  local inputProjects="${2}"
+  if [[ -z "${2}" ]];
+  then
+    echo "${projects}"
+  else
+    func_filter_list "${projects}" "${inputProjects}"
+  fi
+}
+
+# $@: Input projects
+func_list_all_projects() {
+  local projects="{{ (util_projects + back_projects + front_projects) | join(' ') }}"
+  local inputProjects="${@}"
+  func_list_intersected_projects "${projects}" "${inputProjects}"
+}
+
+# $1: Initial list of projects
+# ${@:2}: Projects to exclude
+func_list_projects_without_filter() {
+  local projects="${1}"
+  local projectToExclude
+  for projectToExclude in "${@:2}"
+  do
+    projects=$(echo "${projects}" | sed "s,${projectToExclude},,g")
+  done
+  echo "${projects}"
+}
