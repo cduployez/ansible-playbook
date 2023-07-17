@@ -15,3 +15,8 @@
 - name: Install google-cloud-cli kubectl component
   command: ~/google-cloud-sdk/bin/gcloud components install kubectl
   tags: kubectl
+
+- name: Install helm
+  shell: |
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  tags: helm
