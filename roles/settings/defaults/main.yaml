@@ -11,4 +11,4 @@ front_projects:
 
 util_projects:
   - ansible-playbook
-  - helm-chart-resume
+  - resume-helm-chart
