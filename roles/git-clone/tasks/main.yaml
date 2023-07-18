@@ -15,4 +15,4 @@
   git:
     repo: "git@github.com:cduployez/{{ item }}.git"
     dest: "{{ workspace_path }}/{{ item }}"
-  loop: "{{ front_projects + back_projects }}"
+  loop: "{{ front_projects + back_projects + util_projects }}"
