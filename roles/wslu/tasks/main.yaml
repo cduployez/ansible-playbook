@@ -1,0 +1,14 @@
+---
+- name: Add apt repository for wslu
+  apt_repository:
+    repo: "ppa:wslutilities/wslu"
+    state: present
+  become: true
+
+- name: Install wslu
+  apt:
+    pkg:
+      - wslu
+    state: latest
+    update_cache: true
+  become: true

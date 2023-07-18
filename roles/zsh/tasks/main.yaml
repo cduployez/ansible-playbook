@@ -24,6 +24,9 @@
   ansible.builtin.blockinfile:
     path: ~/.zshrc
     block: |
+      # Set default browser (wslview opens Windows default browser)
+      export BROWSER=wslview
+
       # Add scripts folder to PATH
       export PATH={{workspace_path}}/scripts:$PATH
 

@@ -61,6 +61,10 @@
     - role: windows-shortcuts
       tags: windows-shortcuts
 
-    # Google Cloud CLI (gcloud-cli)
-    - role: google-cloud-cli
-      tags: google-cloud-cli
+    # Google Cloud (gcloud)
+    - role: google-cloud
+      tags: google-cloud
+
+    # WSLU
+    - role: wslu
+      tags: wslu
