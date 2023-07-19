@@ -10,7 +10,9 @@ func_help() {
   func_echo_grid "
 {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
     $(func_echo_sub_title {{ project_name }})
+{% if project_name in back_projects or project_name in front_projects %}
       \t {{ project_name }}-publish | Make Google builder build and store image of {{ project_name }} in $(func_echo_link "https://console.cloud.google.com/artifacts/docker/{{ google_cloud.cluster_name }}/{{ google_cloud.region }}/{{ google_cloud.repository }}?project={{ project_name }}" "Google artifact registry") for helm-chart at path {{ helm_chart_path }}
+{% endif %}
       \t {{ project_name }}-package | Package helm chart of {{ project_name }} at path {{ helm_chart_path }}
       \t {{ project_name }}-up | Package helm chart and install/upgrade helm chart
 {% endfor %}
@@ -79,26 +81,30 @@ func_main() {
   local command="${1}"
 
   if [[ "${command}" == "all-publish" ]]; then
-    {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% if project_name in back_projects or project_name in front_projects %}
     func_publish {{ project_name }}
-    {% endfor %}
+{% endif %}
+{% endfor %}
   elif [[ "${command}" == "all-package" ]]; then
-    {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
     func_package {{ project_name }} {{ helm_chart_path }}
-    {% endfor %}
+{% endfor %}
   elif [[ "${command}" == "all-up" ]]; then
-    {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
     func_up {{ project_name }} {{ helm_chart_path }}
-    {% endfor %}
+{% endfor %}
 
-  {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% if project_name in back_projects or project_name in front_projects %}
   elif [[ "${command}" == "{{ project_name }}-publish" ]]; then
     func_publish {{ project_name }}
+{% endif %}
   elif [[ "${command}" == "{{ project_name }}-package" ]]; then
     func_package {{ project_name }} {{ helm_chart_path }}
   elif [[ "${command}" == "{{ project_name }}-up" ]]; then
     func_up {{ project_name }} {{ helm_chart_path }}
-  {% endfor %}
+{% endfor %}
 
   else
     func_help
