@@ -12,3 +12,13 @@ front_projects:
 util_projects:
   - ansible-playbook
   - resume-helm-chart
+
+helm_chart_project_dict:
+  resume-helm-chart: resume-helm-chart
+  back-resume: back-resume/helm-chart
+  angular-resume: angular-resume/helm-chart
+
+google_cloud:
+  cluster_name: back-resume
+  region: europe-west9
+  repository: resume-repository

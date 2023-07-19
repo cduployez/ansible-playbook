@@ -1,0 +1,108 @@
+#!/bin/bash
+set -e
+
+# Import lib-colors
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
+func_help() {
+  func_echo_title "Help"
+
+  func_echo_grid "
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+    $(func_echo_sub_title {{ project_name }})
+      \t {{ project_name }}-publish | Make Google builder build and store image of {{ project_name }} in $(func_echo_link "https://console.cloud.google.com/artifacts/docker/{{ google_cloud.cluster_name }}/{{ google_cloud.region }}/{{ google_cloud.repository }}?project={{ project_name }}" "Google artifact registry") for helm-chart at path {{ helm_chart_path }}
+      \t {{ project_name }}-package | Package helm chart of {{ project_name }} at path {{ helm_chart_path }}
+      \t {{ project_name }}-up | Package helm chart and install/upgrade helm chart
+{% endfor %}
+  "
+}
+
+# Make Google builder build and store image of a project in its artifact registry
+# $1: Project name
+func_publish() {
+  local projectName="${1}"
+  func_echo_title "Building on Google Cloud and storing image in artifact registry for project ${projectName}"
+  gcloud builds submit --tag {{ google_cloud.region }}-docker.pkg.dev/{{ google_cloud.cluster_name }}/{{ google_cloud.repository }}/${projectName} .
+}
+
+# Package helm chart of a given project. Returns the name of the created tgz file
+# $1: Project name
+# $2: Helm chart path
+func_perform_package() {
+  local projectName="${1}"
+  local helmChartPath="${2}"
+  cd {{ workspace_path }}/${helmChartPath}
+  helm package . | awk -F'/' '{print $NF}'
+}
+
+# Package helm chart of a given project
+# $1: Project name
+# $2: Helm chart path
+func_package() {
+  local projectName="${1}"
+  local helmChartPath="${2}"
+  func_echo_title "Packaging helm chart for project ${projectName} at path ${helmChartPath}"
+  func_perform_package "${projectName}" "${helmChartPath}"
+}
+
+# Deploy helm chart of a given project. The helm chart must be packaged first
+# $1: Project name
+# $2: Helm chart path
+# $3: Helm chart package
+func_deploy() {
+  local projectName="${1}"
+  local helmChartPath="${2}"
+  local package="${3}"
+  func_echo_title "Deploying helm chart for project ${projectName}"
+  cd {{ workspace_path }}/${helmChartPath}
+  helm upgrade --install "${projectName}" "${package}"
+}
+
+# Package and install/upgrade helm chart of a given project
+# $1: Project name
+# $2: Helm chart path
+func_up() {
+  local projectName="${1}"
+  local helmChartPath="${2}"
+  # Package
+  func_echo_title "Packaging helm chart for project ${projectName} at path ${helmChartPath}"
+  local package="$(func_perform_package "${projectName}" "${helmChartPath}")"
+  echo ${package}
+  # Deploy
+  func_deploy "${projectName}" "${helmChartPath}" "${package}"
+}
+
+# $1: Command
+func_main() {
+  cd {{ workspace_path }}
+
+  local command="${1}"
+
+  if [[ "${command}" == "all-publish" ]]; then
+    {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+    func_publish {{ project_name }}
+    {% endfor %}
+  elif [[ "${command}" == "all-package" ]]; then
+    {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+    func_package {{ project_name }} {{ helm_chart_path }}
+    {% endfor %}
+  elif [[ "${command}" == "all-up" ]]; then
+    {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+    func_up {{ project_name }} {{ helm_chart_path }}
+    {% endfor %}
+
+  {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+  elif [[ "${command}" == "{{ project_name }}-publish" ]]; then
+    func_publish {{ project_name }}
+  elif [[ "${command}" == "{{ project_name }}-package" ]]; then
+    func_package {{ project_name }} {{ helm_chart_path }}
+  elif [[ "${command}" == "{{ project_name }}-up" ]]; then
+    func_up {{ project_name }} {{ helm_chart_path }}
+  {% endfor %}
+
+  else
+    func_help
+  fi
+}
+
+func_main ${@}

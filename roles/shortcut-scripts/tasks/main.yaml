@@ -30,6 +30,7 @@
     - build-back-all.sh
     - create-windows-shortcut.sh
     - docker-compose.sh
+    - gcloud-deploy.sh
     - git-pull-branch.sh
     - git-pull-main.sh
     - kubectl-proxy.sh
