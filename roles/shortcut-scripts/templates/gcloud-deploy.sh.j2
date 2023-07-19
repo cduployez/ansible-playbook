@@ -11,6 +11,7 @@ func_help() {
 {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
     $(func_echo_sub_title {{ project_name }})
 {% if project_name in back_projects or project_name in front_projects %}
+      \t {{ project_name }}-clean | Remove builds of {{ project_name }} in $(func_echo_link "https://console.cloud.google.com/artifacts/docker/{{ google_cloud.cluster_name }}/{{ google_cloud.region }}/{{ google_cloud.repository }}?project={{ project_name }}" "Google artifact registry") for helm-chart at path {{ helm_chart_path }}
       \t {{ project_name }}-publish | Make Google builder build and store image of {{ project_name }} in $(func_echo_link "https://console.cloud.google.com/artifacts/docker/{{ google_cloud.cluster_name }}/{{ google_cloud.region }}/{{ google_cloud.repository }}?project={{ project_name }}" "Google artifact registry") for helm-chart at path {{ helm_chart_path }}
 {% endif %}
       \t {{ project_name }}-package | Package helm chart of {{ project_name }} at path {{ helm_chart_path }}
@@ -24,7 +25,23 @@ func_help() {
 func_publish() {
   local projectName="${1}"
   func_echo_title "Building on Google Cloud and storing image in artifact registry for project ${projectName}"
+  cd {{ workspace_path }}/${projectName}
   gcloud builds submit --tag {{ google_cloud.region }}-docker.pkg.dev/{{ google_cloud.cluster_name }}/{{ google_cloud.repository }}/${projectName} .
+  # Clean older builds
+  func_clean "${projectName}"
+}
+
+# Remove older builds from Google Cloud artifact registry
+# Based on: https://www.reddit.com/r/googlecloud/comments/xkgitd/how_to_delete_the_history_of_cloud_build/
+# $1: Project name
+func_clean() {
+  local projectName="${1}"
+  func_echo_title "Removing older builds on Google Cloud artifact registry for project ${projectName}"
+  gcloud artifacts versions list --repository {{ google_cloud.repository }} --location {{ google_cloud.region }} --package ${projectName} \
+  | tee /dev/fd/2 | tail -n +2 | awk '{print $(NF-1), $1}' | sort -r | awk '{print $2}' | tail -n +2 \
+  | while read artifact ; do \
+      gcloud artifacts versions delete --repository={{ google_cloud.repository }} --location={{ google_cloud.region }} --package=${projectName} --quiet ${artifact} ; \
+    done
 }
 
 # Package helm chart of a given project. Returns the name of the created tgz file
@@ -86,6 +103,12 @@ func_main() {
     func_publish {{ project_name }}
 {% endif %}
 {% endfor %}
+  elif [[ "${command}" == "all-clean" ]]; then
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+{% if project_name in back_projects or project_name in front_projects %}
+    func_clean {{ project_name }}
+{% endif %}
+{% endfor %}
   elif [[ "${command}" == "all-package" ]]; then
 {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
     func_package {{ project_name }} {{ helm_chart_path }}
@@ -99,6 +122,8 @@ func_main() {
 {% if project_name in back_projects or project_name in front_projects %}
   elif [[ "${command}" == "{{ project_name }}-publish" ]]; then
     func_publish {{ project_name }}
+  elif [[ "${command}" == "{{ project_name }}-clean" ]]; then
+    func_clean {{ project_name }}
 {% endif %}
   elif [[ "${command}" == "{{ project_name }}-package" ]]; then
     func_package {{ project_name }} {{ helm_chart_path }}
