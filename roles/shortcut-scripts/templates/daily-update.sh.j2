@@ -1,0 +1,38 @@
+#!/bin/bash
+set -e
+
+BUILD="${1}"
+
+# Update OS
+sudo apt update
+sudo apt -y upgrade
+
+# Update Google Cloud
+gcloud components update
+
+# Git pull main branch everywhere
+git-pull-main.sh
+
+# Delete locally merged branches
+git-mass-delete-local-merged-branches.sh
+
+# Update shortcut scripts (in case it changed)
+ansible-playbook.sh --tags shortcut-scripts
+
+if [[ "${BUILD}" == "build" ]]; then
+  # Build all docker images
+  docker-compose.sh all-build
+fi
+
+# Clear docker cache
+docker system prune -a -f
+
+# Git standup
+cd {{ workspace_path }}
+git standup -s
+
+if [ "$(date +%u)" = "1" ]; then
+  git standup -d 3 -s
+else
+  git standup -s
+fi
