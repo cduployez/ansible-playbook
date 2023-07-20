@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+
+# Import colors for terminal
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
+
+cd {{ workspace_path }}
+
+# Find all directories containing .git folders
+for gitFolder in $(find . -type d -name ".git"); do
+  cd ${gitFolder}/..
+
+  # Run the shell script in the current directory
+  func_echo_title "$(pwd)"
+  func_echo_sub_title "Deleting locally merged branches..."
+  git-delete-local-merged-branches.sh
+
+  cd {{ workspace_path }}
+done
