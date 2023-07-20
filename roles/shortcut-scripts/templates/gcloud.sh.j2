@@ -14,6 +14,7 @@ func_help() {
       \t {{ project_name }}-clean | Remove builds of {{ project_name }} in $(func_echo_link "https://console.cloud.google.com/artifacts/docker/{{ google_cloud.cluster_name }}/{{ google_cloud.region }}/{{ google_cloud.repository }}?project={{ project_name }}" "Google artifact registry") for helm-chart at path {{ helm_chart_path }}
       \t {{ project_name }}-publish | Make Google builder build and store image of {{ project_name }} in $(func_echo_link "https://console.cloud.google.com/artifacts/docker/{{ google_cloud.cluster_name }}/{{ google_cloud.region }}/{{ google_cloud.repository }}?project={{ project_name }}" "Google artifact registry") for helm-chart at path {{ helm_chart_path }}
 {% endif %}
+      \t {{ project_name }}-template | Render chart templates locally and display the output for helm-chart of {{ project_name }} at path {{ helm_chart_path }}
       \t {{ project_name }}-package | Package helm chart of {{ project_name }} at path {{ helm_chart_path }}
       \t {{ project_name }}-up | Package helm chart and install/upgrade helm chart
 {% endfor %}
@@ -29,6 +30,17 @@ func_publish() {
   gcloud builds submit --tag {{ google_cloud.region }}-docker.pkg.dev/{{ google_cloud.cluster_name }}/{{ google_cloud.repository }}/${projectName} .
   # Clean older builds
   func_clean "${projectName}"
+}
+
+# Perform simple "helm template" operation
+# $1: Project name
+# $2: Helm chart path
+func_template() {
+  local projectName="${1}"
+  local helmChartPath="${2}"
+  func_echo_title "Render chart templates locally and display the output for project ${projectName}"
+  cd ~/workspace/${helmChartPath}
+  helm template .
 }
 
 # Remove older builds from Google Cloud artifact registry
@@ -109,6 +121,10 @@ func_main() {
     func_clean {{ project_name }}
 {% endif %}
 {% endfor %}
+  elif [[ "${command}" == "all-template" ]]; then
+{% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
+    func_template {{ project_name }} {{ helm_chart_path }}
+{% endfor %}
   elif [[ "${command}" == "all-package" ]]; then
 {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
     func_package {{ project_name }} {{ helm_chart_path }}
@@ -125,6 +141,8 @@ func_main() {
   elif [[ "${command}" == "{{ project_name }}-clean" ]]; then
     func_clean {{ project_name }}
 {% endif %}
+  elif [[ "${command}" == "{{ project_name }}-template" ]]; then
+    func_template {{ project_name }} {{ helm_chart_path }}
   elif [[ "${command}" == "{{ project_name }}-package" ]]; then
     func_package {{ project_name }} {{ helm_chart_path }}
   elif [[ "${command}" == "{{ project_name }}-up" ]]; then
