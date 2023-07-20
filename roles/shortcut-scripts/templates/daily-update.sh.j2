@@ -1,39 +1,43 @@
 #!/bin/bash
 set -e
 
+# Import lib-colors
+source {{ workspace_path }}/scripts/lib/lib-colors.sh
+
 BUILD="${1}"
 
 # Update OS
+func_echo_header "Update OS"
 sudo apt update
 sudo apt -y upgrade
 sudo apt -y autoremove
 
 # Update Google Cloud
+func_echo_header "Update Google Cloud components"
 gcloud components update
 
 # Git pull main branch everywhere
+func_echo_header "Git pull main branch everywhere"
 git-pull-main.sh
 
-# Delete locally merged branches
-git-delete-local-merged-branches.sh
+# Delete merged local branches
+func_echo_header "Delete merged local branches"
+git-mass-delete-merged-local-branches.sh
 
 # Update shortcut scripts (in case it changed)
+func_echo_header "Update shortcut scripts"
 ansible-playbook.sh --tags shortcut-scripts
 
 if [[ "${BUILD}" == "build" ]]; then
   # Build all docker images
+  func_echo_header "Build all docker images"
   docker-compose.sh all-build
 fi
 
 # Clear docker cache
+func_echo_header "Clear docker cache"
 docker system prune -a -f
 
 # Git standup
-cd {{ workspace_path }}
-git standup -s
-
-if [ "$(date +%u)" = "1" ]; then
-  git standup -d 3 -s
-else
-  git standup -s
-fi
+func_echo_header "Git standup"
+git-standup.sh

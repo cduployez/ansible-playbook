@@ -17,6 +17,15 @@ STYLE_TITLE="${BOLD}${UNDERLINE}${YELLOW}"
 STYLE_SUB_TITLE="${YELLOW}"
 STYLE_IMPORTANT="${RED}"
 
+func_echo_header() {
+  local BORDER=$(echo "# ${@} #" | sed 's/./#/g')
+  echo ""
+  echo "${STYLE_HEADER}${BORDER}${NORMAL}"
+  echo "${STYLE_HEADER}# ${@} #${NORMAL}"
+  echo "${STYLE_HEADER}${BORDER}${NORMAL}"
+  echo ""
+}
+
 func_echo_title() {
   echo "${STYLE_TITLE}${@}${NORMAL}"
 }

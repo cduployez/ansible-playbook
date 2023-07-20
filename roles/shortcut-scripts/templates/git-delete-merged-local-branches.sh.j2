@@ -1,0 +1,10 @@
+#!/bin/bash
+
+BRANCHES=$(git branch --merged | egrep -v "(^\*|main)")
+
+if [[ -z "${BRANCHES}" ]]; then
+  echo "Nothing to delete"
+else
+  echo "Deleting branches:"
+  echo ${BRANCHES} | xargs git branch -d
+fi

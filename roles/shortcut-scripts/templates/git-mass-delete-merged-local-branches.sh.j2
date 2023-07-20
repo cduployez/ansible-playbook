@@ -13,8 +13,8 @@ for gitFolder in $(find . -type d -name ".git"); do
 
   # Run the shell script in the current directory
   func_echo_title "$(pwd)"
-  func_echo_sub_title "Deleting locally merged branches..."
-  git-delete-local-merged-branches.sh
+  func_echo_sub_title "Deleting merged local branches..."
+  git-delete-merged-local-branches.sh
 
   cd {{ workspace_path }}
 done
