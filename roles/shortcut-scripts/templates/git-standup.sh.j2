@@ -1,0 +1,46 @@
+#!/bin/bash
+set -e
+
+func_help() {
+  func_echo_title "Help"
+
+  func_echo_grid "
+      \t git-standup.sh | List commits from previous day
+      \t git-standup.sh work, git-standup.sh w | List commits from previous working day
+      \t git-standup.sh help, git-standup.sh h | Display help
+  "
+}
+
+# Git standup command
+# Ignores projects without any changes
+# ${@}: Optional parameters
+func_git_standup() {
+  git standup -s "${@}"
+}
+
+# Git standup compatible with working days: On monday, will look for the work of friday
+# ${@}: Optional parameters
+func_git_standup_working_day() {
+  if [ "$(date +%u)" = "1" ]; then
+    func_git_standup -d 3 "${@}"
+  else
+    func_git_standup "${@}"
+  fi
+}
+
+# ${@}: Optional parameters for git standup command
+func_main() {
+  cd {{ workspace_path }}
+
+  local option="${1}"
+
+  if [[ "${option}" == "--work" || "${option}" == "-w" || "${option}" == "work" || "${option}" == "w" ]]; then
+    func_git_standup_working_day "${@:2}"
+  elif [[ ${option} == "--help" || ${option} == "-h" || ${option} == "help" || ${option} == "h" ]]; then
+    func_help
+  else
+    func_git_standup "${@}"
+  fi
+}
+
+func_main "${@}"

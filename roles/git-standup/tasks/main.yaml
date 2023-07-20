@@ -1,0 +1,5 @@
+---
+- name: "Install git-standup"
+  snap:
+    name: git-standup
+  become: true

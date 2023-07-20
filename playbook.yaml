@@ -68,3 +68,7 @@
     # WSLU
     - role: wslu
       tags: wslu
+
+    # Git standup
+    - role: git-standup
+      tags: git-standup
