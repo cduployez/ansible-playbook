@@ -24,7 +24,7 @@ func_docker_compose() {
   local commandParameters="${@:2}"
 
   # Go to docker compose folder
-  cd ${dockerComposeFolder}
+  cd {{ workspace_path }}/${dockerComposeFolder}
 
   # Run docker compose command
   docker compose -f docker-compose.yaml ${commandParameters}
