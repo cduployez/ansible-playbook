@@ -18,6 +18,7 @@ helm_chart_project_dict:
   resume-helm-chart: resume-helm-chart
   back-resume: back-resume/helm-chart
   angular-resume: angular-resume/helm-chart
+  react-resume: react-resume/helm-chart
 
 google_cloud:
   cluster_name: back-resume

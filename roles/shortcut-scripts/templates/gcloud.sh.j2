@@ -16,7 +16,8 @@ func_help() {
 {% endif %}
       \t {{ project_name }}-template | Render chart templates locally and display the output for helm-chart of {{ project_name }} at path {{ helm_chart_path }}
       \t {{ project_name }}-package | Package helm chart of {{ project_name }} at path {{ helm_chart_path }}
-      \t {{ project_name }}-up | Package helm chart and install/upgrade helm chart
+      \t {{ project_name }}-upgrade | Package helm chart and install/upgrade helm chart
+      \t {{ project_name }}-up | Build application and package helm chart and install/upgrade helm chart
 {% endfor %}
   "
 }
@@ -76,11 +77,11 @@ func_package() {
   func_perform_package "${projectName}" "${helmChartPath}"
 }
 
-# Deploy helm chart of a given project. The helm chart must be packaged first
+# Install or upgrade helm chart of a given project. The helm chart must be packaged first
 # $1: Project name
 # $2: Helm chart path
 # $3: Helm chart package
-func_deploy() {
+func_upgrade() {
   local projectName="${1}"
   local helmChartPath="${2}"
   local package="${3}"
@@ -92,7 +93,7 @@ func_deploy() {
 # Package and install/upgrade helm chart of a given project
 # $1: Project name
 # $2: Helm chart path
-func_up() {
+func_package_upgrade() {
   local projectName="${1}"
   local helmChartPath="${2}"
   # Package
@@ -100,7 +101,7 @@ func_up() {
   local package="$(func_perform_package "${projectName}" "${helmChartPath}")"
   echo ${package}
   # Deploy
-  func_deploy "${projectName}" "${helmChartPath}" "${package}"
+  func_upgrade "${projectName}" "${helmChartPath}" "${package}"
 }
 
 # $1: Command
@@ -131,7 +132,7 @@ func_main() {
 {% endfor %}
   elif [[ "${command}" == "all-up" ]]; then
 {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
-    func_up {{ project_name }} {{ helm_chart_path }}
+    func_package_upgrade {{ project_name }} {{ helm_chart_path }}
 {% endfor %}
 
 {% for project_name, helm_chart_path in helm_chart_project_dict.items() %}
@@ -145,8 +146,13 @@ func_main() {
     func_template {{ project_name }} {{ helm_chart_path }}
   elif [[ "${command}" == "{{ project_name }}-package" ]]; then
     func_package {{ project_name }} {{ helm_chart_path }}
+  elif [[ "${command}" == "{{ project_name }}-upgrade" ]]; then
+    func_package_upgrade {{ project_name }} {{ helm_chart_path }}
   elif [[ "${command}" == "{{ project_name }}-up" ]]; then
-    func_up {{ project_name }} {{ helm_chart_path }}
+{% if project_name in back_projects or project_name in front_projects %}
+    func_publish {{ project_name }}
+{% endif %}
+    func_package_upgrade {{ project_name }} {{ helm_chart_path }}
 {% endfor %}
 
   else
