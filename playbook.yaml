@@ -53,6 +53,10 @@
     - role: chromium
       tags: chromium
 
+    # Firefox
+    - role: firefox
+      tags: firefox
+
     # Shortcut scripts
     - role: shortcut-scripts
       tags: shortcut-scripts

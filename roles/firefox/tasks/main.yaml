@@ -1,0 +1,5 @@
+---
+- name: "Install Firefox"
+  snap:
+    name: firefox
+  become: true
