@@ -1,0 +1,5 @@
+---
+- name: "Install Bruno"
+  snap:
+    name: bruno
+  become: true

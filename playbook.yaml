@@ -69,6 +69,10 @@
     - role: google-cloud
       tags: google-cloud
 
+    # Bruno
+    - role: bruno
+      tags: bruno
+
     # WSLU
     - role: wslu
       tags: wslu
