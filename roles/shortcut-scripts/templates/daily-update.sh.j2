@@ -12,6 +12,9 @@ sudo apt update
 sudo apt -y upgrade
 sudo apt -y autoremove
 
+# Update snap applications
+sudo snap refresh
+
 # Update Google Cloud
 func_echo_header "Update Google Cloud components"
 gcloud components update --quiet
