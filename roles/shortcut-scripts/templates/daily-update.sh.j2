@@ -14,7 +14,7 @@ sudo apt -y autoremove
 
 # Update Google Cloud
 func_echo_header "Update Google Cloud components"
-gcloud components update
+gcloud components update --quiet
 
 # Git pull main branch everywhere
 func_echo_header "Git pull main branch everywhere"
