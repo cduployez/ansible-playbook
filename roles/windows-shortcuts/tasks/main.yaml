@@ -5,6 +5,7 @@
   loop:
     - { icon: "subl", name: "WSL-Sublime-Text", image_name: "sublime-text" }
     - { icon: "chromium", name: "WSL-Chromium", image_name: "chromium-browser" }
+    - { icon: "firefox", name: "WSL-Firefox", image_name: "firefox" }
     - { icon: "intellij-idea-community", name: "WSL-IntelliJ", image_name: "intellij" }
     - { icon: "webstorm", name: "WSL-Webstorm", image_name: "webstorm" }
     - { icon: "gitkraken", name: "WSL-Gitkraken", image_name: "gitkraken" }
