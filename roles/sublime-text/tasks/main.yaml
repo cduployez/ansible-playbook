@@ -23,3 +23,8 @@
   copy:
     src: "Preferences.sublime-settings"
     dest: "~/.config/sublime-text/Packages/User/Preferences.sublime-settings"
+
+- name: Configure Sublime Text custom key bindings
+  copy:
+    src: "Default (Linux).sublime-keymap"
+    dest: "~/.config/sublime-text/Packages/User/Default (Linux).sublime-keymap"
