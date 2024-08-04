@@ -84,8 +84,11 @@ ansible-playbook playbook.yaml
       export $(dbus-launch) # not needed if you have systemd enabled
       export LIBGL_ALWAYS_INDIRECT=1
       export WSL_HOST=$(cat "/etc/resolv.conf" | grep nameserver | awk '{print $2}' )
-      export DISPLAY="${WSL_HOST}:0"
+      # export DISPLAY="${WSL_HOST}:0"
+      export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
 ```
+
+Edit: Fixed $DISPLAY value from https://stackoverflow.com/questions/61860208/running-graphical-linux-desktop-applications-from-wsl-2-error-e233-cannot-op/66398613#66398613
 
 # OpenLens
 
