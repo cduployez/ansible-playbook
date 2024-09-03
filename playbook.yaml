@@ -41,6 +41,10 @@
     - role: java
       tags: java
 
+    # Jetbrains Markdown Preview
+    - role: jetbrains-markdown-preview
+      tags: jetbrains-markdown-preview
+
     # IntelliJ Community
     - role: intellij
       tags: intellij
