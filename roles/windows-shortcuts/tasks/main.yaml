@@ -7,7 +7,7 @@
     - { program: "subl", name: "WSL-Sublime-Text", image_name: "sublime-text" }
     - { program: "chromium", name: "WSL-Chromium", image_name: "chromium-browser" }
     - { program: "firefox", name: "WSL-Firefox", image_name: "firefox" }
-    - { program: "intellij-idea-community", name: "WSL-IntelliJ", image_name: "intellij" }
+    - { program: "intellij-idea-ultimate", name: "WSL-IntelliJ", image_name: "intellij" }
     - { program: "webstorm", name: "WSL-Webstorm", image_name: "webstorm" }
     - { program: "gitkraken", name: "WSL-Gitkraken", image_name: "gitkraken" }
     - { program: "code", name: "WSL-Visual-Studio-Code", image_name: "visual-studio-code" }
