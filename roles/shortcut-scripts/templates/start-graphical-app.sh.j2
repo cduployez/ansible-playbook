@@ -5,7 +5,8 @@ if [ ! $# -eq 1 ]; then
     exit 1
 fi
 
-export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
+# export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
+export DISPLAY=$(ip route list default | awk '{print $3}'):0
 EXECUTABLE_PATH=${1}
 EXECUTABLE_NAME=$(basename ${EXECUTABLE_PATH})
 
