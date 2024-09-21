@@ -9,5 +9,6 @@
     - { program: "firefox", name: "WSL-Firefox", image_name: "firefox" }
     - { program: "intellij-idea-ultimate", name: "WSL-IntelliJ", image_name: "intellij" }
     - { program: "webstorm", name: "WSL-Webstorm", image_name: "webstorm" }
+    - { program: "datagrip", name: "WSL-Datagrip", image_name: "jetbrains-datagrip" }
     - { program: "gitkraken", name: "WSL-Gitkraken", image_name: "gitkraken" }
     - { program: "code", name: "WSL-Visual-Studio-Code", image_name: "visual-studio-code" }
