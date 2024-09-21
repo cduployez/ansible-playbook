@@ -45,13 +45,17 @@
     - role: jetbrains-markdown-preview
       tags: jetbrains-markdown-preview
 
-    # IntelliJ Community
+    # IntelliJ Ultimate
     - role: intellij
       tags: intellij
 
     # Webstorm
     - role: webstorm
       tags: webstorm
+
+    # Datagrip
+    - role: datagrip
+      tags: datagrip
 
     # Chromium
     - role: chromium

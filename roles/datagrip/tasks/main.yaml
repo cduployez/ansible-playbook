@@ -1,0 +1,6 @@
+---
+- name: "Install datagrip"
+  snap:
+    name: datagrip
+    classic: true
+  become: true
