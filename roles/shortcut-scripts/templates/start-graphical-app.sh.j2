@@ -6,7 +6,9 @@ if [ ! $# -eq 1 ]; then
 fi
 
 # export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
-export DISPLAY=$(ip route list default | awk '{print $3}'):0
+# export DISPLAY=$(ip route list default | awk '{print $3}'):0
+# Windows 11 24H2 update: https://www.reddit.com/r/bashonubuntuonwindows/comments/jlkv9i/20h2_update_breaks_x11_forwarding_clients_for_wsl/
+export DISPLAY=:0
 EXECUTABLE_PATH=${1}
 EXECUTABLE_NAME=$(basename ${EXECUTABLE_PATH})
 
