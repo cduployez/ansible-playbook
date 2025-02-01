@@ -24,6 +24,9 @@
   ansible.builtin.blockinfile:
     path: ~/.zshrc
     block: |
+      # Set cursor size to 14 for idea applications
+      export XCURSOR_SIZE=14
+
       # Set default browser (wslview opens Windows default browser)
       export BROWSER=wslview
 
