@@ -8,7 +8,7 @@ back_projects:
 front_projects:
   - angular-resume
   - react-resume
-  - svelte-resume
+#  - svelte-resume
 
 util_projects:
   - ansible-playbook
